@@ -1,0 +1,407 @@
+
+ <!DOCTYPE HTML>
+<html lang="不通话">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>touch上点击相关的东西 | dǎ-jiàng-yóu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="tedzhou">
+    
+    <meta name="description" content="总结一下这一年来做touch开发遇到的“点击问题”
+做了一年的touch，光遇到点击相关的坑就不少，这里做个简单的小结。部分内容已经是博客里面有讲过的了，再简单提下好了。
+元素太小touch*事件不触发
+这个问题以前有讲过
+可点击区域小于14px（经验值）的时候，touchstart/touchmo">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="dǎ-jiàng-yóu" title="dǎ-jiàng-yóu"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="dǎ-jiàng-yóu">dǎ-jiàng-yóu</a></h1>
+				<h2 class="blog-motto">tedzhou</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:tedzhou.github.io">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2013/10/28/click-tap-issues/" title="touch上点击相关的东西" itemprop="url">touch上点击相关的东西</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://tedzhou.github.io" title="tedzhou">tedzhou</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2013-10-28T06:10:00.000Z" itemprop="datePublished">Oct 28 2013</time>
+    Updated:<time datetime="2014-04-16T06:32:27.000Z" itemprop="dateModified">Apr 16 2014</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#总结一下这一年来做touch开发遇到的“点击问题”"><span class="toc-number">1.</span> <span class="toc-text">总结一下这一年来做touch开发遇到的“点击问题”</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#元素太小touch*事件不触发"><span class="toc-number">1.1.</span> <span class="toc-text">元素太小touch*事件不触发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#点击穿透问题"><span class="toc-number">1.2.</span> <span class="toc-text">点击穿透问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios_非clickable元素click不了"><span class="toc-number">1.3.</span> <span class="toc-text">ios 非clickable元素click不了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios7_一个非常诡异的问题"><span class="toc-number">1.4.</span> <span class="toc-text">ios7 一个非常诡异的问题</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改页面结构"><span class="toc-number">1.4.1.</span> <span class="toc-text">改页面结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用<code>&lt;button/&gt;</code>"><span class="toc-number">1.4.2.</span> <span class="toc-text">&lt;button/&gt;</code></span></a></li></ol></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">2.</span> <span class="toc-text">结论</span></a></li></ol>
+		</div>
+		
+		<h1 id="总结一下这一年来做touch开发遇到的“点击问题”">总结一下这一年来做touch开发遇到的“点击问题”</h1>
+<p>做了一年的<code>touch</code>，光遇到点击相关的坑就不少，这里做个简单的小结。部分内容已经是博客里面有讲过的了，再简单提下好了。</p>
+<h2 id="元素太小touch*事件不触发">元素太小touch*事件不触发</h2>
+<p>这个问题以前<a href="http://tedzhou.github.io/blog/2012/12/22/tap/">有讲过</a></p>
+<p>可点击区域小于<code>14px（经验值）</code>的时候，<code>touchstart</code>/<code>touchmove</code>/<code>touchend</code>这些事件统统不会触发。而<code>click</code>事件没有影响。</p>
+<p>解决方法其实也很简单，把元素搞大，或者用<code>click</code>事件。<br>注意的是<code>click</code>会比<code>touchend</code>慢<code>300ms</code>。</p>
+<h2 id="点击穿透问题">点击穿透问题</h2>
+<p>这个问题也<a href="http://tedzhou.github.io/blog/2013/05/21/tapclick/">有讲过</a>。</p>
+<p>我们知道<code>tap</code>事件其实是自定义事件，<code>zepto</code>的实现是在<code>touchstart</code>和<code>touchend</code>后触发<code>tap</code>。目的是当在同一个元素上触发了<code>touchstart</code>和<code>touchend</code>，我们就可以认为用户点一下这个元素，而<code>click</code>事件要在此后的<code>300ms</code>才触发。所以在<code>touch</code>项目中，我们一般用<code>tap</code>来代替<code>click</code>，要的就是快。</p>
+<p>按理说使用<code>tap</code>是优化，但这个优化也带来代价。因为<code>webkit</code>有个这样的逻辑(我个人还是认为是<code>bug</code>啦)，当用户<code>tap</code>后，过了<code>300ms</code>在用户<code>tap</code>的位置触发一个<code>click</code>事件，坑爹的地方在于，即使<code>tap</code>的<code>taget</code>(可以认为是<code>touchstart</code>的 <code>target</code>)和<code>click</code>的<code>target</code>不是同一个对象，<code>click</code>一样触发。</p>
+<p>这里坑就大了嘛。我<code>tap</code>了一个按钮A，在绑定的事件里面改变了<code>dom</code>，页面变化了，原来<code>tap</code>的位置变成了<strong>另外一个按钮B</strong>。这时，这个按钮B就被<code>click</code>了。</p>
+<p>解决方法:</p>
+<ol>
+<li>如果页面<code>dom</code>要变化，建议用<code>click</code>，不过慢<code>300ms</code>.</li>
+<li>你也当然可以<code>tap</code>后<code>300ms</code>再变换<code>dom</code>，不过就没啥意义了。</li>
+<li>在<code>tap</code>后往<code>body</code>上绑定<code>captured</code>的<code>click</code>事件，<code>300ms</code>内触发的<code>click</code>事件如果<code>target</code>和<code>tap</code>的不一样，<code>preventDefault+stopPopagation</code>。</li>
+</ol>
+<p>这里要注意一点，（之前的blog没讲)。关于方法3，还有要注意的是，如果后面的<code>click</code>要是<code>target</code>是<code>input</code>、<code>textarea</code>、<code>a</code>，<code>preventDefault</code>可以阻止掉它的<code>click</code>，但是阻止不了他们的<code>activeBehaviour</code>,也就是<code>textarea</code>会被<code>focus</code>。</p>
+<h2 id="ios_非clickable元素click不了">ios 非clickable元素click不了</h2>
+<p>这里其实大家都知道了, 上面两个问题让我们更多地选择用<code>click</code>，但是ios的<code>click</code>不太好用就是了。</p>
+<p>看代码，下面那个按钮怎么点都没用</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre>    <span class="tag">&lt;<span class="title">p</span> <span class="attribute">id</span>=<span class="value">"p"</span>&gt;</span>假按钮<span class="tag">&lt;/<span class="title">p</span>&gt;</span>
+    <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+        document.getElementById(<span class="string">'p'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
+            alert(<span class="number">1</span>)
+        })
+    </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+</pre></td></tr></table></figure>
+
+<p>因为<code>ios</code>说<code>&lt;p&gt;</code>本来就是不可点的，如果要可点，就要给他加上<code>onclick</code>属性。所以把代码给成<code>&lt;p id=&quot;p&quot; onclick&gt;假按钮&lt;/p&gt;</code>就好了。</p>
+<h2 id="ios7_一个非常诡异的问题">ios7 一个非常诡异的问题</h2>
+<p>请有ios7的打开这个<a href="http://tedzhou.github.io/demo/ios7sucks.html">demo</a>, 点击那个黄色的<code>&lt;p onclick&gt;</code>的元素，然后页面同样的位置会出现一个<code>textarea</code>。然后点击这个<code>textarea</code>, ios7的浏览器会挂掉大概20秒, 直到20s输入法出来后才正常。</p>
+<p>这个坑非常奇怪，尝试了有几个解决方法:</p>
+<h3 id="改页面结构">改页面结构</h3>
+<p>请看页面的源代码，我再页面最前生成了很多元素，如果把页面元素减少，卡顿的时间也会减少。如果把这10000个元素放在<code>textarea</code>后面，无论元素再多也不卡顿。这事非常神奇，无法解释。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre>1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
+<span class="comment">// create 10000 use less divs</span>
+<span class="keyword">var</span> str = <span class="string">''</span>;
+<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) {
+    str += <span class="string">'&lt;div&gt;&lt;/div&gt;'</span>;
+}
+document.getElementById(<span class="string">'uselessDiv'</span>).innerHTML = str;
+</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
+</pre></td></tr></table></figure>
+
+<h3 id="用<code>&lt;button/&gt;</code>">用<code>&lt;button/&gt;</code></h3>
+<p>如果把<code>&lt;p onclick&gt;</code>改成<code>button</code>，这个问题也可以解决。</p>
+<p>这就非常坑了，反正给苹果提bug了。</p>
+<p>这里考虑了几个点:</p>
+<ol>
+<li><p>这里你不能用<code>tap</code>来代替<code>click</code>，首先，<code>tap</code>会穿透；即使<code>tap</code>不穿透，后面再<code>click</code>那个<code>textarea</code>还是会卡住。</p>
+</li>
+<li><p>你不能把<code>&lt;p&gt;</code>里面的<code>onclick</code>干掉，否则就<code>click</code>不了。</p>
+</li>
+<li>页面元素不是想少就能少的了。</li>
+</ol>
+<p>所以，还是得用<code>&lt;button/&gt;</code></p>
+<h1 id="结论">结论</h1>
+<ol>
+<li>尽量用<code>click</code>，慢那<code>300ms</code>和修这些坑比起来算什么。</li>
+<li>能点的东西还是用<code>button</code>比较安全，至少苹果能测一下。</li>
+</ol>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://tedzhou.github.io/2013/10/28/click-tap-issues/" data-title="touch上点击相关的东西 | dǎ-jiàng-yóu" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2013/05/21/tapclick/"  title="开发touch遇到的坑之二:还是tap和click">
+ <strong>NEXT:</strong><br/> 
+ <span>开发touch遇到的坑之二:还是tap和click
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#总结一下这一年来做touch开发遇到的“点击问题”"><span class="toc-number">1.</span> <span class="toc-text">总结一下这一年来做touch开发遇到的“点击问题”</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#元素太小touch*事件不触发"><span class="toc-number">1.1.</span> <span class="toc-text">元素太小touch*事件不触发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#点击穿透问题"><span class="toc-number">1.2.</span> <span class="toc-text">点击穿透问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios_非clickable元素click不了"><span class="toc-number">1.3.</span> <span class="toc-text">ios 非clickable元素click不了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios7_一个非常诡异的问题"><span class="toc-number">1.4.</span> <span class="toc-text">ios7 一个非常诡异的问题</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改页面结构"><span class="toc-number">1.4.1.</span> <span class="toc-text">改页面结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用<code>&lt;button/&gt;</code>"><span class="toc-number">1.4.2.</span> <span class="toc-text">&lt;button/&gt;</code></span></a></li></ol></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">2.</span> <span class="toc-text">结论</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">Categories</p>
+		<ul>
+		
+			<li><a href="/categories/mobile， hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="widget tag">
+<h3 class="title">友情链接</h3>
+<ul class="entry">
+<li><a href="http://hongbinzuo.github.io/" title="Hongbin Zuo's Blog">Hongbin Zuo</a></li>
+</ul>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		<a href="https://github.com/http://github.com/tedzhou" target="_blank" title="github"></a>
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		
+		<a href="http://tedzhou.github.io" target="_blank" title="tedzhou">tedzhou</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"tedzhou"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+  </body>
+</html>
