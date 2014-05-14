@@ -2,7 +2,7 @@
   
     
 
-<html>
+<html style="height:100%;background:#999;">
 <head>
 	<title>test</title>
 	<meta name="viewport" content="width=320,initial-scale=1,minimum-scale=1, maximum-scale=1, user-scalable=no">
@@ -12,18 +12,18 @@
 <script>
 	// create 10000 use less div
 	var str = '';
-	for (var i = 0; i < 10; i++) {
+	for (var i = 0; i < 100000; i++) {
 		str += '<div></div>';
 	}
 	document.getElementById('uselessDiv').innerHTML = str;
 </script>
 
-<div id="pg1" style="background:#333; height:7000px;">
-	<p id="p" value="v" style="background:red; height:100px; width:200px;" onclick="return 0;">v</p>
+<div id="pg1" style="background:#333;">
+	<p id="p" value="v" style="background:#9fae54; height:100px; width:100%;" onclick="return 0;"> p element with onclick attribute</p>
 </div>
 
-<div id="pg2" style="display:none;background:#999; height:9000px;">
-	<textarea style="height:300px;" id="textarea"></textarea>
+<div id="pg2" style="display:none; height:100%;">
+	<textarea style="height:200px; width:100%;" id="textarea"></textarea>
 </div>
 
 <script>
