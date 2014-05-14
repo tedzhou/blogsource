@@ -81,7 +81,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
     </p>
   <p class="article-time">
     <time datetime="2012-12-28T12:17:00.000Z" itemprop="datePublished">Dec 28 2012</time>
-    Updated:<time datetime="2014-04-16T06:32:27.000Z" itemprop="dateModified">Apr 16 2014</time>
+    Updated:<time datetime="2014-05-14T06:37:18.000Z" itemprop="dateModified">May 14 2014</time>
     
   </p>
 </header>
@@ -129,6 +129,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
     }
 </pre></td></tr></table></figure>
 
+
 <p>这里需要利用下adb工具，因为每次开机pc的ip地址都是不一样的，那么每次都要手动填写配置是相当麻烦的，<br>所以这里我们用adb工具来把pc的ip地址写入redsocks的配置里面，这样会方便很多。而通过批处理文件获取ip比较麻烦，因为批处理文件对字符串操作还是比较弱，<br>所以使用了node来获取ip地址。</p>
 <h3 id="利用freewifi">利用freewifi</h3>
 <hr>
@@ -147,6 +148,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
     route add <span class="number">172.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%
     route add <span class="number">119.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%
 </pre></td></tr></table></figure>
+
 
 <p>以上代码实现的是，让内网的ip都走连接都走PC原本的网卡，其他连接都走freewifi. 这样就能兼容两张网卡的使用了.</p>
 <p>虽然以上代码看起来很简单，但是因为公司网络比较复杂，这里我还是用了nodejs来完成上述的设置.</p>
@@ -207,10 +209,6 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
 </nav>
 
 	
-<section class="comment">
-	<div class="ds-thread"></div>
-</section>
-
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
@@ -256,8 +254,6 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
 	<div class="social-font" class="clearfix">
 		
 		
-		
-		<a href="https://github.com/http://github.com/tedzhou" target="_blank" title="github"></a>
 		
 		
 	</div>
@@ -378,40 +374,7 @@ $(document).ready(function(){
 </script>
 
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"tedzhou"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.article-content').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
-  }
-}); 
-</script>
 
 
 
