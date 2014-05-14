@@ -75,7 +75,7 @@
     </p>
   <p class="article-time">
     <time datetime="2012-12-22T07:11:00.000Z" itemprop="datePublished">Dec 22 2012</time>
-    Updated:<time datetime="2014-04-16T06:32:27.000Z" itemprop="dateModified">Apr 16 2014</time>
+    Updated:<time datetime="2014-05-14T06:00:38.000Z" itemprop="dateModified">May 14 2014</time>
     
   </p>
 </header>
@@ -84,7 +84,7 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#开发touch遇到的坑之一:android下浏览器tap无反应"><span class="toc-number">1.</span> <span class="toc-text">开发touch遇到的坑之一:android下浏览器tap无反应</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-number">1.1.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#<a_href="><span class="toc-number">1.2.</span> <span class="toc-text">Demo</a></span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#开发touch遇到的坑之一:android下浏览器tap无反应"><span class="toc-number">1.</span> <span class="toc-text">开发touch遇到的坑之一:android下浏览器tap无反应</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-number">1.1.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Demo"><span class="toc-number">1.2.</span> <span class="toc-text">Demo</a></span></a></li></ol>
 		</div>
 		
 		<h1 id="开发touch遇到的坑之一:android下浏览器tap无反应">开发touch遇到的坑之一:android下浏览器tap无反应</h1>
@@ -102,7 +102,7 @@
 </ol>
 <p><em>虽然tap在android 2。3下命中比较低， 但由于tap还是会比click响应要快， 所以多数情况下还是采用增大可点击区域使用tap事件会更好。</em></p>
 <hr>
-<h2 id="<a_href="http://tedzhou-github-com/demo/tap-html" target="_blank">Demo</a>"><a href="http://tedzhou.github.com/demo/tap.html" target="_blank">Demo</a></h2>
+<h2 id="Demo"><a href="http://tedzhou.github.com/demo/tap.html" target="_blank">Demo</a></h2>
 <ol>
 <li>第一部分测试字体大小delegate <code>tap/touchstart</code> 和<code>href</code> 的命中率， 结论是字体小的<code>tap</code> 命中率非常低， <code>href</code>全命中。 换用<code>touchstart</code> ， <code>touchstart</code> 的成功率比<code>tap</code> 的高， 但也比<code>href</code> 要低，不是全中。</li>
 <li>第二部分测试<code>href</code> 对delegate <code>tap/touchstart</code> 命中有没有影响， 结论<code>tap</code> 和<code>touchstart</code> 还是命中率非常低。</li>
@@ -155,16 +155,12 @@
 </nav>
 
 	
-<section class="comment">
-	<div class="ds-thread"></div>
-</section>
-
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#开发touch遇到的坑之一:android下浏览器tap无反应"><span class="toc-number">1.</span> <span class="toc-text">开发touch遇到的坑之一:android下浏览器tap无反应</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-number">1.1.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#<a_href="><span class="toc-number">1.2.</span> <span class="toc-text">Demo</a></span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#开发touch遇到的坑之一:android下浏览器tap无反应"><span class="toc-number">1.</span> <span class="toc-text">开发touch遇到的坑之一:android下浏览器tap无反应</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#结论"><span class="toc-number">1.1.</span> <span class="toc-text">结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Demo"><span class="toc-number">1.2.</span> <span class="toc-text">Demo</a></span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -204,8 +200,6 @@
 	<div class="social-font" class="clearfix">
 		
 		
-		
-		<a href="https://github.com/http://github.com/tedzhou" target="_blank" title="github"></a>
 		
 		
 	</div>
@@ -326,40 +320,7 @@ $(document).ready(function(){
 </script>
 
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"tedzhou"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.article-content').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
-  }
-}); 
-</script>
 
 
 

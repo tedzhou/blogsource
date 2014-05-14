@@ -78,7 +78,7 @@ nodejs能做什么就不罗嗦了，在座各位比我都熟悉。我主要是�
     </p>
   <p class="article-time">
     <time datetime="2013-05-17T13:33:00.000Z" itemprop="datePublished">May 17 2013</time>
-    Updated:<time datetime="2014-04-16T06:32:27.000Z" itemprop="dateModified">Apr 16 2014</time>
+    Updated:<time datetime="2014-05-14T06:00:38.000Z" itemprop="dateModified">May 14 2014</time>
     
   </p>
 </header>
@@ -100,6 +100,7 @@ nodejs能做什么就不罗嗦了，在座各位比我都熟悉。我主要是�
 <img src="/images/node_thread.jpg">
 
 
+
 <p>线程或进程有以上几种状态（除了开始和挂掉）：运行是当线程获得CPU的时候执行任务的状态。由于要有并发的效果，所以不能让某一线程把所有任务处理完才换出CPU，但时间片用完后，还没执行完任务的线程会回到就绪队列里面，这算是就绪状态。但线程在进行某些慢速IO的时候，不需要CPU资源，主动让出CPU退到等待队列中，这个时候是等待状态。等待状态的线程是不能自己唤醒自己的，要别的线程要唤醒。</p>
 <p>了解了这些基本知识后，我们看下这段代码：</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre>1
@@ -113,6 +114,7 @@ nodejs能做什么就不罗嗦了，在座各位比我都熟悉。我主要是�
 
     <span class="transposed_variable">console.</span><span class="built_in">log</span>(<span class="string">'done???'</span>);
 </pre></td></tr></table></figure>
+
 
 <p>我表示这段代码很长一段时间内我都是无法理解的，因为JS一直被认为是单线程的语言，在这个线程里面它既要去做IO操作的同时(并发)执行<code>console.log(&#39;done???&#39;)</code>;这不科学啊，而且在某个时刻还会有人告诉这个线程IO完成了，去执行回调吧。同样的疑惑在我没有接触node之前也是有的，比如xhr发出请求后，尼玛就回调了。</p>
 <p>当然，后来也听说了js在执行上是单线程，IO这些还是有多线程在支持的，也就一知半解的相信了。在node出来后，而且node也是开源的情况下，我觉得要去看个究竟..</p>
@@ -136,6 +138,7 @@ var result2 = Waitfor...();
 // do Something with the Result1;
 </pre></td></tr></table></figure>
 
+
 <p>这端代码告诉操作系统，这个<code>ReadFile</code>是异步的，操作系统会有其他线程去处理IO，同时允许现在的线程继续执行，不需要阻塞。然后在处理完一些其他事情后，本线程想知道IO到底完成了没有，所以它主动让出CPU，等待IO完成后别的线程唤醒它。</p>
 <p>这种方式的缺陷在于，过多的并发线程会让CPU忙于调度而导致性能降低。</p>
 <h1 id="三、Node的异步">三、Node的异步</h1>
@@ -150,6 +153,7 @@ var result2 = Waitfor...();
 <p>事实上，并非启动的线程越多越好，因为CPU能同时处理的线程和CPU的核数有关，更多的线程启动了也只会放入就绪队列，且正在运行的线程还没完成的时候，因为时间片用完了，会做上下文切换调度其他线程而把目前的线程放入就绪队列，导致在线程调度上花费时间。如果创建的线程少，则更少的切换。</p>
 <p>现在看下node的这里的具体操作：</p>
 <img src="/images/main_thread.jpg">
+
 
 
 <p>当执行<code>fs.read</code>的时候，首先会创建一个iocp对象，然后调用uv_fs_read，这个方法主要作用是在线程池里面加入IO任务。</p>
@@ -197,10 +201,6 @@ var result2 = Waitfor...();
 </nav>
 
 	
-<section class="comment">
-	<div class="ds-thread"></div>
-</section>
-
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
@@ -246,8 +246,6 @@ var result2 = Waitfor...();
 	<div class="social-font" class="clearfix">
 		
 		
-		
-		<a href="https://github.com/http://github.com/tedzhou" target="_blank" title="github"></a>
 		
 		
 	</div>
@@ -368,40 +366,7 @@ $(document).ready(function(){
 </script>
 
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"tedzhou"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.article-content').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
-  }
-}); 
-</script>
 
 
 

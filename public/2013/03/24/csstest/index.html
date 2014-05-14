@@ -75,7 +75,7 @@
     </p>
   <p class="article-time">
     <time datetime="2013-03-24T15:55:00.000Z" itemprop="datePublished">Mar 24 2013</time>
-    Updated:<time datetime="2014-04-16T06:32:27.000Z" itemprop="dateModified">Apr 16 2014</time>
+    Updated:<time datetime="2014-05-14T06:00:38.000Z" itemprop="dateModified">May 14 2014</time>
     
   </p>
 </header>
@@ -107,19 +107,23 @@
 
 
 
+
 <p>而且排第二差的是一个用来治疗ios图片加载闪屏的属性，android上用不上的css属性（其实ios上也没达到正常疗效），那么干掉它就能达到提升性能的目的了！当然，必须要在手机上有同样的表现才有证明这个工具works。</p>
 <h3 id="手机上的Chrome">手机上的Chrome</h3>
 <p>手机上的Chrome同样找出了<code>position:fixed</code>的<code>spf</code>比<code>==base==</code>小1倍，也符合预期。</p>
 <img src="/images/mobile_chrome.jpg">
 
 
+
 <p>为了验证这个工具能找出<code>position:fixed</code>之外的性能瓶颈，我<br>把之前龙哥去掉的<code>box-shadow</code>加上，也能查出来。那就表示这个工具还真有用！</p>
 <img src="/images/mobile_chrome_boxshadow.jpg">
+
 
 
 <h3 id="webview">webview</h3>
 <p>目前触屏项目访问量最多的入口就是在webview，而且用户投诉也是集中在webview上。但在webview的测试结果却呈现出完全无规律的状态。<code>spf</code>没有明显小的也没有明显大的。说明在webview里面，这个思路行不通。</p>
 <img src="/images/mobile_webview.jpg">
+
 
 
 
@@ -169,10 +173,6 @@ rendering</code>。有一个有趣的是，如果在页面放上<code>box-shadow
 </nav>
 
 	
-<section class="comment">
-	<div class="ds-thread"></div>
-</section>
-
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
@@ -218,8 +218,6 @@ rendering</code>。有一个有趣的是，如果在页面放上<code>box-shadow
 	<div class="social-font" class="clearfix">
 		
 		
-		
-		<a href="https://github.com/http://github.com/tedzhou" target="_blank" title="github"></a>
 		
 		
 	</div>
@@ -340,40 +338,7 @@ $(document).ready(function(){
 </script>
 
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"tedzhou"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.article-content').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
-  }
-}); 
-</script>
 
 
 

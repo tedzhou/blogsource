@@ -74,7 +74,7 @@
     </p>
   <p class="article-time">
     <time datetime="2013-05-21T13:23:00.000Z" itemprop="datePublished">May 21 2013</time>
-    Updated:<time datetime="2014-04-16T06:32:27.000Z" itemprop="dateModified">Apr 16 2014</time>
+    Updated:<time datetime="2014-05-14T06:00:38.000Z" itemprop="dateModified">May 14 2014</time>
     
   </p>
 </header>
@@ -165,6 +165,7 @@
 	document.addEventListener(<span class="string">'mousedown'</span>, ghostClick.onMouseDown, <span class="literal">true</span>);
 </pre></td></tr></table></figure>
 
+
 <p>然后在zepto的touchend的handler里面mark下当前的坐标:</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
 2
@@ -196,6 +197,7 @@
             */</span>
 </pre></td></tr></table></figure>
 
+
 <p>实际上就是在touchend的时候记录一下坐标和target，然后在全局监听click事件，如果1000ms内click触发了坐标一样，target<br>却不一样,</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
 2
@@ -204,6 +206,7 @@
         <span class="built_in">Math</span>.abs(event.clientX - x) &lt; <span class="number">25</span>
         && <span class="built_in">Math</span>.abs(event.clientY - y) &lt; <span class="number">25</span>)
 </pre></td></tr></table></figure>
+
 
 <p>那么我们认为是这个click是多余的，直接就<code>stopPropagation</code>和<code>preventDefault</code>了。</p>
 <p>简单的demo<a href="http://tedzhou.github.io/demo/preventGhostClick/index.html">在此</a></p>
@@ -245,10 +248,6 @@
 </nav>
 
 	
-<section class="comment">
-	<div class="ds-thread"></div>
-</section>
-
 </div>  
       <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
 
@@ -294,8 +293,6 @@
 	<div class="social-font" class="clearfix">
 		
 		
-		
-		<a href="https://github.com/http://github.com/tedzhou" target="_blank" title="github"></a>
 		
 		
 	</div>
@@ -416,40 +413,7 @@ $(document).ready(function(){
 </script>
 
 
-<script type="text/javascript">
-  var duoshuoQuery = {short_name:"tedzhou"};
-  (function() {
-    var ds = document.createElement('script');
-    ds.type = 'text/javascript';ds.async = true;
-    ds.src = '//static.duoshuo.com/embed.js';
-    ds.charset = 'UTF-8';
-    (document.getElementsByTagName('head')[0] 
-    || document.getElementsByTagName('body')[0]).appendChild(ds);
-  })();
-</script> 
 
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){ 
-  $('.article-content').each(function(i){
-    $(this).find('img').each(function(){
-      if ($(this).parent().hasClass('fancybox')) return;
-      var alt = this.alt;
-      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
-      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
-    });
-    $(this).find('.fancybox').each(function(){
-      $(this).attr('rel', 'article' + i);
-    });
-  });
-  if($.fancybox){
-    $('.fancybox').fancybox();
-  }
-}); 
-</script>
 
 
 
