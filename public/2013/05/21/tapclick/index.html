@@ -23,6 +23,7 @@
     <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
     
     <link rel="stylesheet" href="/css/style.css" type="text/css">
+
 </head>
 
   <body>
@@ -93,120 +94,26 @@
 <ol>
 <li>不要用tap，统一用click事件。</li>
 <li>tap事件后500ms后，等click出来后，再做dom相关的操作。（这其实就有点多余了，就是想要响应更快才用tap嘛！）</li>
-<li>参考google <a href="https://developers.google.com/mobile/articles/fast_buttons?hl=zh-CN" target="_blank">fastbutton</a>的思路。</li>
+<li>参考google <a href="https://developers.google.com/mobile/articles/fast_buttons?hl=zh-CN" target="_blank" rel="external">fastbutton</a>的思路。</li>
 </ol>
 <h1 id="fastbutton的思路">fastbutton的思路</h1>
-<p><code>fastbutton</code>本身不是用来解决<code>点击穿透</code>的。它的出现的背景是因为浏览器对touch<br>系列事件的命中率太低，如果按钮本身很小的话，怎么点都不容易触发，而click<br>事件触发比touch事件慢300ms，但按钮再小一点中了一定能触发。<a href="http://tedzhou.github.io/blog/2012/12/22/tap/">参考很久前我的另一篇文章的研究</a><br>‘fastbutton’是想把两个事件统一起来，结合两者的优点，先监听tap，如果tap命中了，那么就放弃click事件。如果tap<br>没有命中，至少300ms后还有<code>click</code>。</p>
+<p><code>fastbutton</code>本身不是用来解决<code>点击穿透</code>的。它的出现的背景是因为浏览器对touch<br>系列事件的命中率太低，如果按钮本身很小的话，怎么点都不容易触发，而click<br>事件触发比touch事件慢300ms，但按钮再小一点中了一定能触发。<a href="http://tedzhou.github.io/blog/2012/12/22/tap/" target="_blank" rel="external">参考很久前我的另一篇文章的研究</a><br>‘fastbutton’是想把两个事件统一起来，结合两者的优点，先监听tap，如果tap命中了，那么就放弃click事件。如果tap<br>没有命中，至少300ms后还有<code>click</code>。</p>
 <h1 id="fastbutton也遇到了这个问题">fastbutton也遇到了这个问题</h1>
 <p>当toustart命中后要去除后面的click handler，否则绑定的事件会执行两次？但怎么不让后面的click执行？如果preventDefault<br>的话，那么scroll事件也会收到影响，页面有可能就滚不懂了。所以fastbutton的办法是touchstart执行了，然后在body上绑上click事件<br>    <code>document.addEventListener(&#39;click&#39;, google.clickbuster.onClick, true);</code><br>这里请留意第三个参数，是true哦，表示在capture的时候执行onclick，这个时候在handler里面判断下event<br>的坐标，如果和上次点的位置一样（表明是多余的），那<code>stopPropagation</code>和<code>preventDefautl</code>什么的随便搞。这样那个多余的click就不会下来了。</p>
 <p>为了不影响后面的正常<code>click</code>，<code>fastbutton</code>只在<code>touchstart</code>后的<code>2.5s</code>进行这个判断。(2<br>.5s也不知道google为啥这么搞，感觉太长了)</p>
 <h1 id="如何借鉴">如何借鉴</h1>
 <p>其实基本就照抄了。<code>touchstart</code>后2.5s秒之内再来个同样坐标的click事件，就干掉你。<br>因为我们现在触屏新老框架一起使用中，还没法直接使用<code>fastbutton</code>。为了根治这货、方便使用，还需要在zepto里面进行hack。</p>
 <p>以下代码是参考<code>fastbutton</code>改了一下的, 在zepto的touch事件里面加上一个<code>ghostClick</code>对象来管理</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-</pre></td><td class="code"><pre>
-	<span class="keyword">var</span> ghostClick = {
-		_coordinates:[],
-		mark:<span class="function"><span class="keyword">function</span><span class="params">(x ,y, el)</span>{</span>
-			<span class="keyword">this</span>._coordinates.push({x:x, y:y, el:el});
-			window.setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
-				ghostClick.unmark();
-				<span class="comment">// 这1000ms是经验值</span>
-			}, <span class="number">1000</span>);
-		},
-		unmark:<span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
-			<span class="keyword">return</span> <span class="keyword">this</span>._coordinates.shift();
-		},
-		onMouseDown:<span class="function"><span class="keyword">function</span><span class="params">(event)</span> {</span>
-			ghostClick._coordinates.forEach(<span class="function"><span class="keyword">function</span><span class="params">(coordinate)</span>{</span>
-				<span class="keyword">var</span> x = coordinate.x;
-				<span class="keyword">var</span> y = coordinate.y;
-				<span class="keyword">var</span> el = coordinate.el;
-				<span class="comment">// 坐标一样，target却不一样，你妹还不是穿透了？</span>
-				<span class="keyword">if</span> (el != event.target && <span class="built_in">Math</span>.abs(event.clientX - x) &lt; <span class="number">25</span> && <span class="built_in">Math</span>.abs(event.clientY - y) &lt; <span class="number">25</span>) {
-					event.stopPropagation();
-					event.preventDefault();
-				}
-			});
-		}
-	};
-
-	<span class="comment">// 事件触发顺序 mousedown-&gt;focus-&gt;mouseup-&gt;click</span>
-	<span class="comment">// 如果不想focus，那就mousedown吧</span>
-	document.addEventListener(<span class="string">'mousedown'</span>, ghostClick.onMouseDown, <span class="literal">true</span>);
-</pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">var</span> ghostClick = {</div><div class="line">	_coordinates:[],</div><div class="line">	mark:<span class="function"><span class="keyword">function</span><span class="params">(x ,y, el)</span></span>{</div><div class="line">		<span class="keyword">this</span>._coordinates.push({x:x, y:y, el:el});</div><div class="line">		<span class="built_in">window</span>.setTimeout(<span class="function"><span class="keyword">function</span><span class="params">()</span></span>{</div><div class="line">			ghostClick.unmark();</div><div class="line">			<span class="comment">// 这1000ms是经验值</span></div><div class="line">		}, <span class="number">1000</span>);</div><div class="line">	},</div><div class="line">	unmark:<span class="function"><span class="keyword">function</span><span class="params">()</span></span>{</div><div class="line">		<span class="keyword">return</span> <span class="keyword">this</span>._coordinates.shift();</div><div class="line">	},</div><div class="line">	onMouseDown:<span class="function"><span class="keyword">function</span><span class="params">(event)</span> </span>{</div><div class="line">		ghostClick._coordinates.forEach(<span class="function"><span class="keyword">function</span><span class="params">(coordinate)</span></span>{</div><div class="line">			<span class="keyword">var</span> x = coordinate.x;</div><div class="line">			<span class="keyword">var</span> y = coordinate.y;</div><div class="line">			<span class="keyword">var</span> el = coordinate.el;</div><div class="line">			<span class="comment">// 坐标一样，target却不一样，你妹还不是穿透了？</span></div><div class="line">			<span class="keyword">if</span> (el != event.target && <span class="built_in">Math</span>.abs(event.clientX - x) &lt; <span class="number">25</span> && <span class="built_in">Math</span>.abs(event.clientY - y) &lt; <span class="number">25</span>) {</div><div class="line">				event.stopPropagation();</div><div class="line">				event.preventDefault();</div><div class="line">			}</div><div class="line">		});</div><div class="line">	}</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">// 事件触发顺序 mousedown-&gt;focus-&gt;mouseup-&gt;click</span></div><div class="line"><span class="comment">// 如果不想focus，那就mousedown吧</span></div><div class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'mousedown'</span>, ghostClick.onMouseDown, <span class="literal">true</span>);</div></pre></td></tr></table></figure>
 
 <p>然后在zepto的touchend的handler里面mark下当前的坐标:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-</pre></td><td class="code"><pre>    <span class="comment">/**
-            * 这里省略好多代码
-            */</span>
-           $(document.body).bind(<span class="string">'touchend'</span>, <span class="function"><span class="keyword">function</span><span class="params">(e)</span>{</span>
-               cancelLongTap();
-               <span class="comment">/** 干掉ghostClick**/</span>
-               ghostClick.mark(touch.x1, touch.y1, touch.el[<span class="number">0</span>]);
-               <span class="comment">/**
-                 * 这里省略好多代码
-                 */</span>
-           });
-           <span class="comment">/**
-            * 这里省略好多代码
-            */</span>
-</pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line">        * 这里省略好多代码</div><div class="line">        */</div><div class="line">       $(<span class="built_in">document</span>.body).bind(<span class="string">'touchend'</span>, <span class="function"><span class="keyword">function</span><span class="params">(e)</span></span>{</div><div class="line">           cancelLongTap();</div><div class="line">           <span class="comment">/** 干掉ghostClick**/</span></div><div class="line">           ghostClick.mark(touch.x1, touch.y1, touch.el[<span class="number">0</span>]);</div><div class="line">           <span class="comment">/**</span></div><div class="line">             * 这里省略好多代码</div><div class="line">             */</div><div class="line">       });</div><div class="line">       <span class="comment">/**</span></div><div class="line">        * 这里省略好多代码</div><div class="line">        */</div></pre></td></tr></table></figure>
 
 <p>实际上就是在touchend的时候记录一下坐标和target，然后在全局监听click事件，如果1000ms内click触发了坐标一样，target<br>却不一样,</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre>1
-2
-3
-</pre></td><td class="code"><pre>    <span class="keyword">if</span> (el != event.target &&
-        <span class="built_in">Math</span>.abs(event.clientX - x) &lt; <span class="number">25</span>
-        && <span class="built_in">Math</span>.abs(event.clientY - y) &lt; <span class="number">25</span>)
-</pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (el != event.target &&</div><div class="line">    <span class="built_in">Math</span>.abs(event.clientX - x) &lt; <span class="number">25</span></div><div class="line">    && <span class="built_in">Math</span>.abs(event.clientY - y) &lt; <span class="number">25</span>)</div></pre></td></tr></table></figure>
 
 <p>那么我们认为是这个click是多余的，直接就<code>stopPropagation</code>和<code>preventDefault</code>了。</p>
-<p>简单的demo<a href="http://tedzhou.github.io/demo/preventGhostClick/index.html">在此</a></p>
+<p>简单的demo<a href="http://tedzhou.github.io/demo/preventGhostClick/index.html" target="_blank" rel="external">在此</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -266,7 +173,7 @@
 	<p class="asidetitle">Categories</p>
 		<ul>
 		
-			<li><a href="/categories/mobile， hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
+			<li><a href="/categories/mobile，-hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
 		
 		</ul>
 </div>
@@ -306,7 +213,7 @@
 		
 		
 	</div>
-		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
 		
 		<a href="http://tedzhou.github.io" target="_blank" title="tedzhou">tedzhou</a>
 		

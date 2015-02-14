@@ -24,6 +24,7 @@
     <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
     
     <link rel="stylesheet" href="/css/style.css" type="text/css">
+
 </head>
 
   <body>
@@ -84,15 +85,15 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cssTest工具"><span class="toc-number">1.</span> <span class="toc-text">cssTest工具</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路"><span class="toc-number">1.2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验结果"><span class="toc-number">1.3.</span> <span class="toc-text">实验结果</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PC的Chrome"><span class="toc-number">1.3.1.</span> <span class="toc-text">PC的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机上的Chrome"><span class="toc-number">1.3.2.</span> <span class="toc-text">手机上的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webview"><span class="toc-number">1.3.3.</span> <span class="toc-text">webview</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#source_code"><span class="toc-number">1.5.</span> <span class="toc-text">source code</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cssTest工具"><span class="toc-number">1.</span> <span class="toc-text">cssTest工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路"><span class="toc-number">1.2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验结果"><span class="toc-number">1.3.</span> <span class="toc-text">实验结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PC的Chrome"><span class="toc-number">1.3.1.</span> <span class="toc-text">PC的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机上的Chrome"><span class="toc-number">1.3.2.</span> <span class="toc-text">手机上的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webview"><span class="toc-number">1.3.3.</span> <span class="toc-text">webview</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#source_code"><span class="toc-number">1.5.</span> <span class="toc-text">source code</span></a></li></ol></li></ol>
 		</div>
 		
 		<h1 id="cssTest工具">cssTest工具</h1>
 <h2 id="背景">背景</h2>
 <p>之前和龙哥一起做了个导航条优化的需求，修改了导航条顶部导航的html结构和样式。过程中发现js代码没有改动的滚动的逻辑，新导航上了之后在android<br>的chrome 上<em>滚动</em>卡的EB，Webview 中也有些卡顿，但没有chrome 里卡。这是我第一次意识到chrome也会卡，那chrome 和webview<br>可能不是用同一套渲染模型（当然大部分情景chrome是快多了的）。当时龙哥把几个臭名远瞩的<em>css属性</em>(<code>box-shadow</code>/<code>border-radius</code>)<br>干掉后立马就不那么卡了。</p>
-<p>这使我有想法去监控下是什么样式改动会导致滚动变卡，毕竟触屏是个大项目，css样式也不少，大海捞针明显不科学。尽管PC上chrome的dev<br>tools很好用，却没能告诉开发者究竟是哪一行样式是性能瓶颈。我大海捞针在google找办法，终于找到一个<a href="http://andy.edinborough.org/CSS-Stress-Testing-and-Performance-Profiling" target="_blank">通过js模拟滚动的监控思路</a>。</p>
+<p>这使我有想法去监控下是什么样式改动会导致滚动变卡，毕竟触屏是个大项目，css样式也不少，大海捞针明显不科学。尽管PC上chrome的dev<br>tools很好用，却没能告诉开发者究竟是哪一行样式是性能瓶颈。我大海捞针在google找办法，终于找到一个<a href="http://andy.edinborough.org/CSS-Stress-Testing-and-Performance-Profiling" target="_blank" rel="external">通过js模拟滚动的监控思路</a>。</p>
 <h2 id="思路">思路</h2>
-<p><a href="http://andy.edinborough.org/CSS-Stress-Testing-and-Performance-Profiling" target="_blank">原文</a><br>作者的思路是遍历所有dom元素，去掉每个<code>dom</code>元素的<code>id</code>和<code>css-class</code>，然后用js设置<code>window
+<p><a href="http://andy.edinborough.org/CSS-Stress-Testing-and-Performance-Profiling" target="_blank" rel="external">原文</a><br>作者的思路是遍历所有dom元素，去掉每个<code>dom</code>元素的<code>id</code>和<code>css-class</code>，然后用js设置<code>window
 .scrollBy</code>去模拟滚动，然后记录<em>滚动时间/滚动的帧数</em>(不是准确的帧数，只是onscroll触发的次数）现在为了方便记<em>滚动时间/滚动的帧数</em>为<code>spf</code>，为了不和<code>fps</code>搞混，故意反过来写，当然<code>spf</code>越小越好。如果去掉某个css-class后<code>spf</code>明显变小，则说明这个css样式产生了不好的影响。</p>
 <p>借鉴这个思路，我做了这个cssTest工具，有一下几个修改：</p>
 <ol>
@@ -102,9 +103,8 @@
 </ol>
 <h2 id="实验结果">实验结果</h2>
 <h3 id="PC的Chrome">PC的Chrome</h3>
-<p>在PC上的实验结果真的让我以为找到了<em>答案</em>。<br>如图，<code>==base==</code>为原始的样式。去掉<code>position:fixed</code>后的<code>spf</code>和<code>==base==</code>甚至小了3、4<br>倍！而且这个实验结果也是符合预期的，<code>position:fixed</code>对滚动性能的影响也是众所周知的差了（[参见: Google I/O 2012 ]<br>(<a href="http://www.youtube.com/embed/hAzhayTnhEI?rel=0)）。" target="_blank">http://www.youtube.com/embed/hAzhayTnhEI?rel=0)）。</a></p>
+<p>在PC上的实验结果真的让我以为找到了<em>答案</em>。<br>如图，<code>==base==</code>为原始的样式。去掉<code>position:fixed</code>后的<code>spf</code>和<code>==base==</code>甚至小了3、4<br>倍！而且这个实验结果也是符合预期的，<code>position:fixed</code>对滚动性能的影响也是众所周知的差了（[参见: Google I/O 2012 ]<br>(<a href="http://www.youtube.com/embed/hAzhayTnhEI?rel=0)）。" target="_blank" rel="external">http://www.youtube.com/embed/hAzhayTnhEI?rel=0)）。</a></p>
 <img src="/images/pc_chrome.jpg">
-
 
 
 <p>而且排第二差的是一个用来治疗ios图片加载闪屏的属性，android上用不上的css属性（其实ios上也没达到正常疗效），那么干掉它就能达到提升性能的目的了！当然，必须要在手机上有同样的表现才有证明这个工具works。</p>
@@ -112,10 +112,8 @@
 <p>手机上的Chrome同样找出了<code>position:fixed</code>的<code>spf</code>比<code>==base==</code>小1倍，也符合预期。</p>
 <img src="/images/mobile_chrome.jpg">
 
-
 <p>为了验证这个工具能找出<code>position:fixed</code>之外的性能瓶颈，我<br>把之前龙哥去掉的<code>box-shadow</code>加上，也能查出来。那就表示这个工具还真有用！</p>
 <img src="/images/mobile_chrome_boxshadow.jpg">
-
 
 <h3 id="webview">webview</h3>
 <p>目前触屏项目访问量最多的入口就是在webview，而且用户投诉也是集中在webview上。但在webview的测试结果却呈现出完全无规律的状态。<code>spf</code>没有明显小的也没有明显大的。说明在webview里面，这个思路行不通。</p>
@@ -123,14 +121,13 @@
 
 
 
-
 <h2 id="总结">总结</h2>
 <p>cssTest工具在webview上没有成功，原因其实很简单，我假象的浏览器渲染模型是:用户触发滚动-&gt;页面渲染-&gt;触发scroll事件。<br>只要记录下一段时间内的scroll触发的次数就可以估出页面渲染的性能，因为css样式渲染慢了，scroll事件就触发得少。但缺陷就在于js触发的滚动<br>浏览器不保证每次会去渲染，有可能就直接触发scroll事件了。<br>但PC上还是有一定规律可循的，会在连续scroll n次之后渲染一次，那么css样式影响渲染还是可以体现出来。</p>
-<p>但在webview就完全没有规律了。由此可以猜想webview和chrome的渲染方式不一样，参考<a href="http://www.chromium.org/developers/design-documents/rendering-architecture-diagrams" target="_blank">Rendering Architecture Diagrams</a><br>。chrome用的是<code>Composited GPU rendering</code> 那么webview也许是<code>software
-rendering</code>。有一个有趣的是，如果在页面放上<code>box-shadow</code>，手机的chrome反而比webview要忙，因为<a href="http://aerotwist.com/blog/on-translate3d-and-layer-creation-hacks/" target="_blank">Where things get<br>really messy is on mobile devices, because they have comparatively limited VRAM, and it becomes easy to exhaust that and end up with excruciatingly poor rendering performance</a></p>
+<p>但在webview就完全没有规律了。由此可以猜想webview和chrome的渲染方式不一样，参考<a href="http://www.chromium.org/developers/design-documents/rendering-architecture-diagrams" target="_blank" rel="external">Rendering Architecture Diagrams</a><br>。chrome用的是<code>Composited GPU rendering</code> 那么webview也许是<code>software
+rendering</code>。有一个有趣的是，如果在页面放上<code>box-shadow</code>，手机的chrome反而比webview要忙，因为<a href="http://aerotwist.com/blog/on-translate3d-and-layer-creation-hacks/" target="_blank" rel="external">Where things get<br>really messy is on mobile devices, because they have comparatively limited VRAM, and it becomes easy to exhaust that and end up with excruciatingly poor rendering performance</a></p>
 <p>虽然在webview上不太理想，但是在chrome上还是有些作用的。</p>
 <h2 id="source_code">source code</h2>
-<p><a href="https://github.com/tedzhou/csstest/blob/master/csstest.js" target="_blank">放在github</a></p>
+<p><a href="https://github.com/tedzhou/csstest/blob/master/csstest.js" target="_blank" rel="external">放在github</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -178,7 +175,7 @@ rendering</code>。有一个有趣的是，如果在页面放上<code>box-shadow
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cssTest工具"><span class="toc-number">1.</span> <span class="toc-text">cssTest工具</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路"><span class="toc-number">1.2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验结果"><span class="toc-number">1.3.</span> <span class="toc-text">实验结果</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PC的Chrome"><span class="toc-number">1.3.1.</span> <span class="toc-text">PC的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机上的Chrome"><span class="toc-number">1.3.2.</span> <span class="toc-text">手机上的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webview"><span class="toc-number">1.3.3.</span> <span class="toc-text">webview</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#source_code"><span class="toc-number">1.5.</span> <span class="toc-text">source code</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#cssTest工具"><span class="toc-number">1.</span> <span class="toc-text">cssTest工具</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#思路"><span class="toc-number">1.2.</span> <span class="toc-text">思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实验结果"><span class="toc-number">1.3.</span> <span class="toc-text">实验结果</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#PC的Chrome"><span class="toc-number">1.3.1.</span> <span class="toc-text">PC的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机上的Chrome"><span class="toc-number">1.3.2.</span> <span class="toc-text">手机上的Chrome</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#webview"><span class="toc-number">1.3.3.</span> <span class="toc-text">webview</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">1.4.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#source_code"><span class="toc-number">1.5.</span> <span class="toc-text">source code</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
@@ -190,7 +187,7 @@ rendering</code>。有一个有趣的是，如果在页面放上<code>box-shadow
 	<p class="asidetitle">Categories</p>
 		<ul>
 		
-			<li><a href="/categories/mobile， hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
+			<li><a href="/categories/mobile，-hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
 		
 		</ul>
 </div>
@@ -230,7 +227,7 @@ rendering</code>。有一个有趣的是，如果在页面放上<code>box-shadow
 		
 		
 	</div>
-		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
 		
 		<a href="http://tedzhou.github.io" target="_blank" title="tedzhou">tedzhou</a>
 		

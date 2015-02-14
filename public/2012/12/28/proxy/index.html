@@ -30,6 +30,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
     <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
     
     <link rel="stylesheet" href="/css/style.css" type="text/css">
+
 </head>
 
   <body>
@@ -90,7 +91,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一键代理"><span class="toc-number">1.</span> <span class="toc-text">一键代理</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">1.2.</span> <span class="toc-text">实现</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#adb工具"><span class="toc-number">1.2.1.</span> <span class="toc-text">adb工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iptables"><span class="toc-number">1.2.2.</span> <span class="toc-text">iptables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redsocks"><span class="toc-number">1.2.3.</span> <span class="toc-text">redsocks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用freewifi"><span class="toc-number">1.2.4.</span> <span class="toc-text">利用freewifi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后串起来"><span class="toc-number">1.2.5.</span> <span class="toc-text">最后串起来</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖"><span class="toc-number">1.3.</span> <span class="toc-text">依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明下"><span class="toc-number">1.4.</span> <span class="toc-text">说明下</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一键代理"><span class="toc-number">1.</span> <span class="toc-text">一键代理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">1.2.</span> <span class="toc-text">实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#adb工具"><span class="toc-number">1.2.1.</span> <span class="toc-text">adb工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iptables"><span class="toc-number">1.2.2.</span> <span class="toc-text">iptables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redsocks"><span class="toc-number">1.2.3.</span> <span class="toc-text">redsocks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用freewifi"><span class="toc-number">1.2.4.</span> <span class="toc-text">利用freewifi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后串起来"><span class="toc-number">1.2.5.</span> <span class="toc-text">最后串起来</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖"><span class="toc-number">1.3.</span> <span class="toc-text">依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明下"><span class="toc-number">1.4.</span> <span class="toc-text">说明下</span></a></li></ol></li></ol>
 		</div>
 		
 		<h1 id="一键代理">一键代理</h1>
@@ -101,52 +102,26 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
 <hr>
 <h2 id="实现">实现</h2>
 <hr>
-<p>android上虽然没有全局代理，但是每个连接实际上都被防火墙(<a href="http://www.netfilter.org/" target="_blank"><code>iptables</code></a>)截获，那么在防火墙上监听<code>80端口</code>，然后转发到PC上的<code>fiddle</code>就好了。可惜iptables只能把包转发到本机，那么可以在android手机上运行一个进程，监听某个端口，<code>iptables</code>把包转到那端口，再由改进程把包转到PC的<code>80端口</code>。</p>
+<p>android上虽然没有全局代理，但是每个连接实际上都被防火墙(<a href="http://www.netfilter.org/" target="_blank" rel="external"><code>iptables</code></a>)截获，那么在防火墙上监听<code>80端口</code>，然后转发到PC上的<code>fiddle</code>就好了。可惜iptables只能把包转发到本机，那么可以在android手机上运行一个进程，监听某个端口，<code>iptables</code>把包转到那端口，再由改进程把包转到PC的<code>80端口</code>。</p>
 <h3 id="adb工具">adb工具</h3>
 <hr>
-<p>adb全称是<a href="http://developer.android.com/tools/help/adb.html" target="_blank">Android Debug Bridge</a>。<br>允许PC通过usb数据线调试android手机，我们利用adb来进行手机与PC的通信。</p>
+<p>adb全称是<a href="http://developer.android.com/tools/help/adb.html" target="_blank" rel="external">Android Debug Bridge</a>。<br>允许PC通过usb数据线调试android手机，我们利用adb来进行手机与PC的通信。</p>
 <h3 id="iptables">iptables</h3>
 <hr>
 <p>iptables贯穿整个网络传输流程，这里只关注出口监控，只要是将要从80端口发出的都是我们需要代理的包。</p>
-<pre><code>adb shell /tedproxy/iptables <span class="attribute">-t</span> nat <span class="attribute">-A</span> OUTPUT <span class="attribute">-p</span> tcp <span class="subst">--</span>dport <span class="number">80</span> <span class="attribute">-j</span> REDIRECT <span class="subst">--</span><span class="keyword">to</span> <span class="number">8123</span>
+<pre><code>adb <span class="keyword">shell</span> /tedproxy/iptables -<span class="keyword">t</span> nat -A OUTPUT -<span class="keyword">p</span> tcp --dport <span class="number">80</span> -<span class="keyword">j</span> REDIRECT --<span class="keyword">to</span> <span class="number">8123</span>
 </code></pre><p>通过以上代码即可实现80端口的包都转到8123上。</p>
 <h3 id="redsocks">redsocks</h3>
 <hr>
 <p>redsocks 是开源的包转发工具。进行一下配置就可以监听8123端口的数据包，然后转发到<code>10.55.58.111:8888</code>上，一般是fiddler。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-</pre></td><td class="code"><pre>    redsocks {
-        local_ip = <span class="number">127.0</span>.<span class="number">0.1</span>;
-        local_port = <span class="number">8123</span>;
-        ip = <span class="number">10.66</span>.<span class="number">58.111</span>;
-        port = <span class="number">8888</span>;
-        <span class="keyword">type</span> = http-relay;
-    }
-</pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="title">redsocks</span> {</div><div class="line">    <span class="title">local_ip</span> = <span class="number">127.0.0.1</span>;</div><div class="line">    <span class="title">local_port</span> = <span class="number">8123</span>;</div><div class="line">    <span class="title">ip</span> = <span class="number">10.66.58.111</span>;</div><div class="line">    <span class="title">port</span> = <span class="number">8888</span>;</div><div class="line">    <span class="title">type</span> = http-relay;</div><div class="line">}</div></pre></td></tr></table></figure>
 
 <p>这里需要利用下adb工具，因为每次开机pc的ip地址都是不一样的，那么每次都要手动填写配置是相当麻烦的，<br>所以这里我们用adb工具来把pc的ip地址写入redsocks的配置里面，这样会方便很多。而通过批处理文件获取ip比较麻烦，因为批处理文件对字符串操作还是比较弱，<br>所以使用了node来获取ip地址。</p>
 <h3 id="利用freewifi">利用freewifi</h3>
 <hr>
 <p>如果PC和手机不是在同一个局域网内会出现NAT映射之类的问题导致手机转发过去的包PC无法收到。所以为了让PC和手机在同一个局域网，我利用了<code>freewifi</code>。<br>手机能连上<code>freewifi</code>这是毫无疑问的，但PC要连上freewif就需要多一张无线网卡。同时，当PC出现了两张网卡的时候，<br>网络会出现问题的。因为PC发出去的数据包不知道走那个网卡出去。</p>
 <p>解决方法是配置route表。</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-</pre></td><td class="code"><pre>    <span class="title">route</span> delete <span class="number">0.0.0.0</span>
-    route add <span class="number">0.0.0.0</span> mask <span class="number">0.0.0.0</span> %freewifi_gate%
-    route add <span class="number">10.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%
-    route add <span class="number">192.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%
-    route add <span class="number">172.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%
-    route add <span class="number">119.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%
-</pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="title">route</span> delete <span class="number">0.0.0.0</span></div><div class="line">route add <span class="number">0.0.0.0</span> mask <span class="number">0.0.0.0</span> %freewifi_gate%</div><div class="line">route add <span class="number">10.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%</div><div class="line">route add <span class="number">192.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%</div><div class="line">route add <span class="number">172.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%</div><div class="line">route add <span class="number">119.0.0.0</span> mask <span class="number">255.0.0.0</span> %inter_gate%</div></pre></td></tr></table></figure>
 
 <p>以上代码实现的是，让内网的ip都走连接都走PC原本的网卡，其他连接都走freewifi. 这样就能兼容两张网卡的使用了.</p>
 <p>虽然以上代码看起来很简单，但是因为公司网络比较复杂，这里我还是用了nodejs来完成上述的设置.</p>
@@ -216,7 +191,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一键代理"><span class="toc-number">1.</span> <span class="toc-text">一键代理</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">1.2.</span> <span class="toc-text">实现</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#adb工具"><span class="toc-number">1.2.1.</span> <span class="toc-text">adb工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iptables"><span class="toc-number">1.2.2.</span> <span class="toc-text">iptables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redsocks"><span class="toc-number">1.2.3.</span> <span class="toc-text">redsocks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用freewifi"><span class="toc-number">1.2.4.</span> <span class="toc-text">利用freewifi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后串起来"><span class="toc-number">1.2.5.</span> <span class="toc-text">最后串起来</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖"><span class="toc-number">1.3.</span> <span class="toc-text">依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明下"><span class="toc-number">1.4.</span> <span class="toc-text">说明下</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一键代理"><span class="toc-number">1.</span> <span class="toc-text">一键代理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#目的"><span class="toc-number">1.1.</span> <span class="toc-text">目的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现"><span class="toc-number">1.2.</span> <span class="toc-text">实现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#adb工具"><span class="toc-number">1.2.1.</span> <span class="toc-text">adb工具</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iptables"><span class="toc-number">1.2.2.</span> <span class="toc-text">iptables</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#redsocks"><span class="toc-number">1.2.3.</span> <span class="toc-text">redsocks</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#利用freewifi"><span class="toc-number">1.2.4.</span> <span class="toc-text">利用freewifi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#最后串起来"><span class="toc-number">1.2.5.</span> <span class="toc-text">最后串起来</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖"><span class="toc-number">1.3.</span> <span class="toc-text">依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#说明下"><span class="toc-number">1.4.</span> <span class="toc-text">说明下</span></a></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
@@ -228,7 +203,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
 	<p class="asidetitle">Categories</p>
 		<ul>
 		
-			<li><a href="/categories/mobile， hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
+			<li><a href="/categories/mobile，-hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
 		
 		</ul>
 </div>
@@ -268,7 +243,7 @@ android上虽然没有全局代理，但是每个连接实际上都被防火墙(
 		
 		
 	</div>
-		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
 		
 		<a href="http://tedzhou.github.io" target="_blank" title="tedzhou">tedzhou</a>
 		

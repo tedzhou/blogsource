@@ -26,6 +26,7 @@
     <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
     
     <link rel="stylesheet" href="/css/style.css" type="text/css">
+
 </head>
 
   <body>
@@ -86,17 +87,17 @@
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#总结一下这一年来做touch开发遇到的“点击问题”"><span class="toc-number">1.</span> <span class="toc-text">总结一下这一年来做touch开发遇到的“点击问题”</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#元素太小touch*事件不触发"><span class="toc-number">1.1.</span> <span class="toc-text">元素太小touch*事件不触发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#点击穿透问题"><span class="toc-number">1.2.</span> <span class="toc-text">点击穿透问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios_非clickable元素click不了"><span class="toc-number">1.3.</span> <span class="toc-text">ios 非clickable元素click不了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios7_一个非常诡异的问题"><span class="toc-number">1.4.</span> <span class="toc-text">ios7 一个非常诡异的问题</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改页面结构"><span class="toc-number">1.4.1.</span> <span class="toc-text">改页面结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用<code>&lt;button/&gt;</code>"><span class="toc-number">1.4.2.</span> <span class="toc-text">&lt;button/&gt;</code></span></a></li></ol></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">2.</span> <span class="toc-text">结论</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#总结一下这一年来做touch开发遇到的“点击问题”"><span class="toc-number">1.</span> <span class="toc-text">总结一下这一年来做touch开发遇到的“点击问题”</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#元素太小touch*事件不触发"><span class="toc-number">1.1.</span> <span class="toc-text">元素太小touch*事件不触发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#点击穿透问题"><span class="toc-number">1.2.</span> <span class="toc-text">点击穿透问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios_非clickable元素click不了"><span class="toc-number">1.3.</span> <span class="toc-text">ios 非clickable元素click不了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios7_一个非常诡异的问题"><span class="toc-number">1.4.</span> <span class="toc-text">ios7 一个非常诡异的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改页面结构"><span class="toc-number">1.4.1.</span> <span class="toc-text">改页面结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用<button/>"><span class="toc-number">1.4.2.</span> <span class="toc-text">用<button/></span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">2.</span> <span class="toc-text">结论</span></a></li></ol>
 		</div>
 		
 		<h1 id="总结一下这一年来做touch开发遇到的“点击问题”">总结一下这一年来做touch开发遇到的“点击问题”</h1>
 <p>做了一年的<code>touch</code>，光遇到点击相关的坑就不少，这里做个简单的小结。部分内容已经是博客里面有讲过的了，再简单提下好了。</p>
 <h2 id="元素太小touch*事件不触发">元素太小touch*事件不触发</h2>
-<p>这个问题以前<a href="http://tedzhou.github.io/blog/2012/12/22/tap/">有讲过</a></p>
+<p>这个问题以前<a href="http://tedzhou.github.io/blog/2012/12/22/tap/" target="_blank" rel="external">有讲过</a></p>
 <p>可点击区域小于<code>14px（经验值）</code>的时候，<code>touchstart</code>/<code>touchmove</code>/<code>touchend</code>这些事件统统不会触发。而<code>click</code>事件没有影响。</p>
 <p>解决方法其实也很简单，把元素搞大，或者用<code>click</code>事件。<br>注意的是<code>click</code>会比<code>touchend</code>慢<code>300ms</code>。</p>
 <h2 id="点击穿透问题">点击穿透问题</h2>
-<p>这个问题也<a href="http://tedzhou.github.io/blog/2013/05/21/tapclick/">有讲过</a>。</p>
+<p>这个问题也<a href="http://tedzhou.github.io/blog/2013/05/21/tapclick/" target="_blank" rel="external">有讲过</a>。</p>
 <p>我们知道<code>tap</code>事件其实是自定义事件，<code>zepto</code>的实现是在<code>touchstart</code>和<code>touchend</code>后触发<code>tap</code>。目的是当在同一个元素上触发了<code>touchstart</code>和<code>touchend</code>，我们就可以认为用户点一下这个元素，而<code>click</code>事件要在此后的<code>300ms</code>才触发。所以在<code>touch</code>项目中，我们一般用<code>tap</code>来代替<code>click</code>，要的就是快。</p>
 <p>按理说使用<code>tap</code>是优化，但这个优化也带来代价。因为<code>webkit</code>有个这样的逻辑(我个人还是认为是<code>bug</code>啦)，当用户<code>tap</code>后，过了<code>300ms</code>在用户<code>tap</code>的位置触发一个<code>click</code>事件，坑爹的地方在于，即使<code>tap</code>的<code>taget</code>(可以认为是<code>touchstart</code>的 <code>target</code>)和<code>click</code>的<code>target</code>不是同一个对象，<code>click</code>一样触发。</p>
 <p>这里坑就大了嘛。我<code>tap</code>了一个按钮A，在绑定的事件里面改变了<code>dom</code>，页面变化了，原来<code>tap</code>的位置变成了<strong>另外一个按钮B</strong>。这时，这个按钮B就被<code>click</code>了。</p>
@@ -110,45 +111,17 @@
 <h2 id="ios_非clickable元素click不了">ios 非clickable元素click不了</h2>
 <p>这里其实大家都知道了, 上面两个问题让我们更多地选择用<code>click</code>，但是ios的<code>click</code>不太好用就是了。</p>
 <p>看代码，下面那个按钮怎么点都没用</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-</pre></td><td class="code"><pre>    <span class="tag">&lt;<span class="title">p</span> <span class="attribute">id</span>=<span class="value">"p"</span>&gt;</span>假按钮<span class="tag">&lt;/<span class="title">p</span>&gt;</span>
-    <span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
-        document.getElementById(<span class="string">'p'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span>{</span>
-            alert(<span class="number">1</span>)
-        })
-    </span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">p</span> <span class="attribute">id</span>=<span class="value">"p"</span>&gt;</span>假按钮<span class="tag">&lt;/<span class="title">p</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></div><div class="line">    <span class="built_in">document</span>.getElementById(<span class="string">'p'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span><span class="params">()</span></span>{</div><div class="line">        alert(<span class="number">1</span>)</div><div class="line">    })</div><div class="line"><span class="tag">&lt;/<span class="title">script</span>&gt;</span></div></pre></td></tr></table></figure>
 
 <p>因为<code>ios</code>说<code>&lt;p&gt;</code>本来就是不可点的，如果要可点，就要给他加上<code>onclick</code>属性。所以把代码给成<code>&lt;p id=&quot;p&quot; onclick&gt;假按钮&lt;/p&gt;</code>就好了。</p>
 <h2 id="ios7_一个非常诡异的问题">ios7 一个非常诡异的问题</h2>
-<p>请有ios7的打开这个<a href="http://tedzhou.github.io/demo/ios7sucks.html">demo</a>, 点击那个黄色的<code>&lt;p onclick&gt;</code>的元素，然后页面同样的位置会出现一个<code>textarea</code>。然后点击这个<code>textarea</code>, ios7的浏览器会挂掉大概20秒, 直到20s输入法出来后才正常。</p>
+<p>请有ios7的打开这个<a href="http://tedzhou.github.io/demo/ios7sucks.html" target="_blank" rel="external">demo</a>, 点击那个黄色的<code>&lt;p onclick&gt;</code>的元素，然后页面同样的位置会出现一个<code>textarea</code>。然后点击这个<code>textarea</code>, ios7的浏览器会挂掉大概20秒, 直到20s输入法出来后才正常。</p>
 <p>这个坑非常奇怪，尝试了有几个解决方法:</p>
 <h3 id="改页面结构">改页面结构</h3>
 <p>请看页面的源代码，我再页面最前生成了很多元素，如果把页面元素减少，卡顿的时间也会减少。如果把这10000个元素放在<code>textarea</code>后面，无论元素再多也不卡顿。这事非常神奇，无法解释。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre>1
-2
-3
-4
-5
-6
-7
-8
-</pre></td><td class="code"><pre><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript">
-<span class="comment">// create 10000 use less divs</span>
-<span class="keyword">var</span> str = <span class="string">''</span>;
-<span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) {
-    str += <span class="string">'&lt;div&gt;&lt;/div&gt;'</span>;
-}
-document.getElementById(<span class="string">'uselessDiv'</span>).innerHTML = str;
-</span><span class="tag">&lt;/<span class="title">script</span>&gt;</span>
-</pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span></div><div class="line"><span class="comment">// create 10000 use less divs</span></div><div class="line"><span class="keyword">var</span> str = <span class="string">''</span>;</div><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) {</div><div class="line">    str += <span class="string">'&lt;div&gt;&lt;/div&gt;'</span>;</div><div class="line">}</div><div class="line"><span class="built_in">document</span>.getElementById(<span class="string">'uselessDiv'</span>).innerHTML = str;</div><div class="line"><span class="tag">&lt;/<span class="title">script</span>&gt;</span></div></pre></td></tr></table></figure>
 
-<h3 id="用<code>&lt;button/&gt;</code>">用<code>&lt;button/&gt;</code></h3>
+<h3 id="用&lt;button/&gt;">用<code>&lt;button/&gt;</code></h3>
 <p>如果把<code>&lt;p onclick&gt;</code>改成<code>button</code>，这个问题也可以解决。</p>
 <p>这就非常坑了，反正给苹果提bug了。</p>
 <p>这里考虑了几个点:</p>
@@ -212,7 +185,7 @@ document.getElementById(<span class="string">'uselessDiv'</span>).innerHTML = st
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#总结一下这一年来做touch开发遇到的“点击问题”"><span class="toc-number">1.</span> <span class="toc-text">总结一下这一年来做touch开发遇到的“点击问题”</span></a></li><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#元素太小touch*事件不触发"><span class="toc-number">1.1.</span> <span class="toc-text">元素太小touch*事件不触发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#点击穿透问题"><span class="toc-number">1.2.</span> <span class="toc-text">点击穿透问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios_非clickable元素click不了"><span class="toc-number">1.3.</span> <span class="toc-text">ios 非clickable元素click不了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios7_一个非常诡异的问题"><span class="toc-number">1.4.</span> <span class="toc-text">ios7 一个非常诡异的问题</span></a></li><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改页面结构"><span class="toc-number">1.4.1.</span> <span class="toc-text">改页面结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用<code>&lt;button/&gt;</code>"><span class="toc-number">1.4.2.</span> <span class="toc-text">&lt;button/&gt;</code></span></a></li></ol></ol><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">2.</span> <span class="toc-text">结论</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#总结一下这一年来做touch开发遇到的“点击问题”"><span class="toc-number">1.</span> <span class="toc-text">总结一下这一年来做touch开发遇到的“点击问题”</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#元素太小touch*事件不触发"><span class="toc-number">1.1.</span> <span class="toc-text">元素太小touch*事件不触发</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#点击穿透问题"><span class="toc-number">1.2.</span> <span class="toc-text">点击穿透问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios_非clickable元素click不了"><span class="toc-number">1.3.</span> <span class="toc-text">ios 非clickable元素click不了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ios7_一个非常诡异的问题"><span class="toc-number">1.4.</span> <span class="toc-text">ios7 一个非常诡异的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#改页面结构"><span class="toc-number">1.4.1.</span> <span class="toc-text">改页面结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#用<button/>"><span class="toc-number">1.4.2.</span> <span class="toc-text">用<button/></span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#结论"><span class="toc-number">2.</span> <span class="toc-text">结论</span></a></li></ol>
   </div>
 
 <div id="asidepart">
@@ -224,7 +197,7 @@ document.getElementById(<span class="string">'uselessDiv'</span>).innerHTML = st
 	<p class="asidetitle">Categories</p>
 		<ul>
 		
-			<li><a href="/categories/mobile， hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
+			<li><a href="/categories/mobile，-hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
 		
 		</ul>
 </div>
@@ -264,7 +237,7 @@ document.getElementById(<span class="string">'uselessDiv'</span>).innerHTML = st
 		
 		
 	</div>
-		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
 		
 		<a href="http://tedzhou.github.io" target="_blank" title="tedzhou">tedzhou</a>
 		

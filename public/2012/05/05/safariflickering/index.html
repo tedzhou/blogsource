@@ -28,6 +28,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
     <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
     
     <link rel="stylesheet" href="/css/style.css" type="text/css">
+
 </head>
 
   <body>
@@ -88,7 +89,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 		
 		<div id="toc" class="toc-article">
 			<strong class="toc-title">Contents</strong>
-		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计实验"><span class="toc-number">2.</span> <span class="toc-text">设计实验</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）小于1280px，不闪。"><span class="toc-number">2.0.1.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）小于1280px，不闪。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:"><span class="toc-number">2.0.2.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:</span></a></li></ol></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#关于layer和GPU加速"><span class="toc-number">3.</span> <span class="toc-text">关于layer和GPU加速</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#如何看layer"><span class="toc-number">3.0.1.</span> <span class="toc-text">如何看layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#怎样让元素单独成layer:"><span class="toc-number">3.0.2.</span> <span class="toc-text">怎样让元素单独成layer:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#layer怎么开GPU加速:"><span class="toc-number">3.0.3.</span> <span class="toc-text">layer怎么开GPU加速:</span></a></li></ol>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计实验"><span class="toc-number">2.</span> <span class="toc-text">设计实验</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）小于1280px，不闪。"><span class="toc-number">2.0.1.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）小于1280px，不闪。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:"><span class="toc-number">2.0.2.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于layer和GPU加速"><span class="toc-number">3.</span> <span class="toc-text">关于layer和GPU加速</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#如何看layer"><span class="toc-number">3.0.1.</span> <span class="toc-text">如何看layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#怎样让元素单独成layer:"><span class="toc-number">3.0.2.</span> <span class="toc-text">怎样让元素单独成layer:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#layer怎么开GPU加速:"><span class="toc-number">3.0.3.</span> <span class="toc-text">layer怎么开GPU加速:</span></a></li></ol></li></ol></li></ol>
 		</div>
 		
 		<h2 id="背景">背景</h2>
@@ -102,7 +103,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 <p>这个思路确实有用，但是在我们使用场景里面发现一级子元素不闪了，部分孙元素还在闪。然后我们再给孙元素加上，发现还有其他后代元素会闪。<br>一怒之下，写了个<code>#scrllor * {-webkit-transform: translateZ(0);}</code>，<br>让iscroll下所有的子孙元素都自己搞个layer，那坚决就不闪了。但是这么丑陋的方式有点不能接受，而且每个元素单独一个layer，webkit<br>需要维护好每个layer，那个可见哪个不可见，也是一个性能隐患点（iphone5性能太好了，没感觉出来）。</p>
 <p>所以还是得想办法找出规律。之前和阿子看过另外一个iscroll闪动的问题（插入节点闪烁），就怀疑和高度有关系。</p>
 <h2 id="设计实验">设计实验</h2>
-<p><a href="http://tedzhou.github.com/demo/flicker/test3d.html" target="_blank">Demo在这</a><br>两个纬度排列组合各种条件，这里直接给结论好了:</p>
+<p><a href="http://tedzhou.github.com/demo/flicker/test3d.html" target="_blank" rel="external">Demo在这</a><br>两个纬度排列组合各种条件，这里直接给结论好了:</p>
 <h4 id="若父节点有GPU加速，且高度（包括border）小于1280px，不闪。">若父节点有GPU加速，且高度（包括border）小于1280px，不闪。</h4>
 <h4 id="若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:">若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:</h4>
 <ol>
@@ -116,7 +117,6 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 <h4 id="如何看layer">如何看layer</h4>
 <p>如图</p>
 <img src="/images/layer.jpg">
-
 
 <h4 id="怎样让元素单独成layer:">怎样让元素单独成layer:</h4>
 <ol>
@@ -139,7 +139,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 <li>Layer has a descendant that is a compositing layer</li>
 <li>Layer has a sibling with a lower z-index which has a compositing layer (in otherwords the layer is rendered on top of a composited layer)</li>
 </ol>
-<p><a href="http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome" target="_blank">参考 GPU Accelerated Compositing in Chrome</a></p>
+<p><a href="http://www.chromium.org/developers/design-documents/gpu-accelerated-compositing-in-chrome" target="_blank" rel="external">参考 GPU Accelerated Compositing in Chrome</a></p>
   
 	</div>
 		<footer class="article-footer clearfix">
@@ -147,7 +147,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 
 <div class="article-categories">
   <span></span>
-  <a class="article-category-link" href="/categories/mobile， hole/">mobile， hole</a>
+  <a class="article-category-link" href="/categories/mobile，-hole/">mobile， hole</a>
 </div>
 
 
@@ -184,7 +184,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 
   <div id="toc" class="toc-aside">
   <strong class="toc-title">Contents</strong>
-  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计实验"><span class="toc-number">2.</span> <span class="toc-text">设计实验</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）小于1280px，不闪。"><span class="toc-number">2.0.1.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）小于1280px，不闪。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:"><span class="toc-number">2.0.2.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:</span></a></li></ol></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#关于layer和GPU加速"><span class="toc-number">3.</span> <span class="toc-text">关于layer和GPU加速</span></a></li><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#如何看layer"><span class="toc-number">3.0.1.</span> <span class="toc-text">如何看layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#怎样让元素单独成layer:"><span class="toc-number">3.0.2.</span> <span class="toc-text">怎样让元素单独成layer:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#layer怎么开GPU加速:"><span class="toc-number">3.0.3.</span> <span class="toc-text">layer怎么开GPU加速:</span></a></li></ol>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#背景"><span class="toc-number">1.</span> <span class="toc-text">背景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计实验"><span class="toc-number">2.</span> <span class="toc-text">设计实验</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）小于1280px，不闪。"><span class="toc-number">2.0.1.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）小于1280px，不闪。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:"><span class="toc-number">2.0.2.</span> <span class="toc-text">若父节点有GPU加速，且高度（包括border）大于1280px，父节点闪，子节点分一下情况:</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于layer和GPU加速"><span class="toc-number">3.</span> <span class="toc-text">关于layer和GPU加速</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#如何看layer"><span class="toc-number">3.0.1.</span> <span class="toc-text">如何看layer</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#怎样让元素单独成layer:"><span class="toc-number">3.0.2.</span> <span class="toc-text">怎样让元素单独成layer:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#layer怎么开GPU加速:"><span class="toc-number">3.0.3.</span> <span class="toc-text">layer怎么开GPU加速:</span></a></li></ol></li></ol></li></ol>
   </div>
 
 <div id="asidepart">
@@ -196,7 +196,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 	<p class="asidetitle">Categories</p>
 		<ul>
 		
-			<li><a href="/categories/mobile， hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
+			<li><a href="/categories/mobile，-hole/" title="mobile， hole">mobile， hole<sup>2</sup></a></li>
 		
 		</ul>
 </div>
@@ -236,7 +236,7 @@ iscroll为了加快滚动速度，使用了会开启gpu加速的属性-webkit-tr
 		
 		
 	</div>
-		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2014 
+		<p class="copyright">Powered by <a href="http://zespia.tw/hexo/" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
 		
 		<a href="http://tedzhou.github.io" target="_blank" title="tedzhou">tedzhou</a>
 		
