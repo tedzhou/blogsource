@@ -1,0 +1,213 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>微楼书</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content=" initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="format-detection" content="telephone=no">
+    <link href="js/build/islider.css" rel="stylesheet">
+    <style>
+        *{
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        body
+        {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            background: black;
+        }
+        #iSlider-wrapper
+        {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+        .slider_background
+        {
+            width:100%;
+            height:100%;
+            background-color:black;
+            position:relative;
+        }
+
+        .slider_cover,.slider_image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%,-50%);
+            transform: translate(-50%,-50%);
+        }
+
+        .slider_hide
+        {
+            opacity: 0;
+        }
+        .slider_show
+        {
+            /*opacity: 1;*/
+            -webkit-animation:show 0.8s ease-in;
+        }
+        @-webkit-keyframes show /* Safari 和 Chrome */
+        {
+            0% {opacity:0;}
+            /*50% {opacity: .5}*/
+            100% {opacity:1;}
+        }
+        .speaker-wrap {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            bottom: 0;
+            right: 0;
+        }
+        .speaker {
+            position: absolute;
+            background-image: url(img/speaker.png);
+            width: 26px;
+            height: 25px;
+            -webkit-background-size: 26px;
+            background-size: 26px;
+            background-position: center;
+            top: 50%;
+            left: 50%;
+            margin: -13px 0 0 -13px;
+        }
+        .speaker_muted
+        {
+            background-image: url(img/speaker_muted.png);
+        }
+    </style>
+</head>
+<body>
+<div id="iSlider-wrapper">
+
+</div>
+<div id="speakerEle" class="speaker-wrap">
+    <div id="speakerIcon" class="speaker"></div>
+</div>
+<audio id="audioEle" src="music.mp3" autoplay="autoplay" loop="loop"></audio>
+<script src="js/build/islider_core.js"></script>
+<script>
+    var wrapper = document.getElementById('iSlider-wrapper');
+    var data = [];
+    var isVerticle = screen.width < screen.height;
+
+    var categoryHeight = wrapper.clientWidth / 640 * 800;
+    var categoryWidth = wrapper.clientWidth;
+
+    if(!isVerticle)
+    {
+        categoryHeight = wrapper.clientHeight;
+        categoryWidth = wrapper.clientHeight / 800 * 640;
+    }
+    var offsetX = 60;
+    var offsetY = 130;
+    var itemHeight = 41;
+    var itemWidth = 320;
+    var tag = 13;
+    var itemHTML = "";
+    var sectionBeginIndex = [9,12,16,21,29];
+    var sectionEndIndex = [11,15,20,28,44];
+    for(var j = 0; j < 5; j++)
+    {
+        var scrollTo = 0;
+        itemHTML += '<a href="javascript:iSlider.slideTo('+sectionBeginIndex[j]+')" style="position:absolute; height: '+itemHeight/8+'%;width: '+itemWidth/6.2+'%; top: '+(offsetY+j*(itemHeight+tag))/8+'%;left: '+(offsetX)/6.2+'%;"></a>';
+    }
+    var categoryHTML = '<div class="slider_cover" style="width:'+categoryWidth+'px;height:'+categoryHeight+'px;">'+itemHTML+
+            '</div>';
+
+    for(var i = 0; i < 45; i++) {
+        var index  = i + 1;
+        data.push({
+            content: [
+                    '<div class="slider_background">',
+                        '<img class="slider_image" src="bg/pic_', index, '.jpg" ',isVerticle?'width':'height','="100%"></img>',
+                        i != 0 ?('<img class="slider_cover slider_hide" data-index="'+i+'" src="text/pic_'+ index+ '.png" '+(isVerticle?'width':'height')+'="100%"></img>'):'',
+                        i == 8? categoryHTML : "",
+                        sectionEndIndex.indexOf(i) >= 0 ? '<a href="javascript:iSlider.slideTo(8);" style="background: blue; color: white; font-size: 50px;">back</a>' : '',
+                    '</div>'
+            ].join("")
+        });
+    }
+    var iSlider = new iSlider({
+        dom : wrapper,
+        data : data,
+        duration: 100,
+        animateType: 'card',
+        type:"dom"
+    });
+
+    iSlider.onslidechange = function(i, o) {
+        iSlider.lockLeft = false;
+        iSlider.lockRight = false;
+
+        var dom = document.querySelector('[data-index="'+i+'"]');
+        if(dom) {
+            dom.className = dom.className.replace("slider_hide", "slider_show");
+        }
+
+        var domBefore = document.querySelector('[data-index="'+o+'"]');
+        if(domBefore) {
+            domBefore.className = domBefore.className.replace("slider_show", "slider_hide");
+        }
+
+        if(sectionBeginIndex.indexOf(i) >= 0) {
+            iSlider.lockLeft = true;
+        }
+    };
+
+    var speakerEle = document.querySelector('#speakerEle');
+    var speakerIcon = document.querySelector('#speakerIcon');
+    speakerEle.onclick = toggleMusic;
+    var audioEle = document.querySelector("#audioEle");
+    var firstTaped = 0;
+    function startPlayMusic() {
+        0 === firstTaped && (audioEle.play(), firstTaped = 1)
+    }
+    function toggleMusic() {
+        audioEle.paused ? (speakerIcon.className = speakerIcon.className .replace("speaker_muted",""), audioEle.play()) : (speakerIcon.className += " speaker_muted", audioEle.pause())
+    }
+
+    startPlayMusic();
+
+    var ScrollFix = function(elem) {
+        // Variables to track inputs
+        var startY, startTopScroll;
+
+        elem = elem || document.querySelector(elem);
+
+        // If there is no element, then do nothing
+        if(!elem)
+            return;
+
+        // Handle the start of interactions
+        elem.addEventListener('touchstart', function(event){
+            startY = event.touches[0].pageY;
+            startTopScroll = elem.scrollTop;
+
+            if(startTopScroll <= 0)
+                elem.scrollTop = 1;
+
+            if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
+                elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
+        }, false);
+    };
+
+
+    var scrollable = document.body;
+    new ScrollFix(scrollable);
+
+
+</script>
+</body>
+</html>
