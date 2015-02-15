@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="zh-CN">
+<html lang="zh-CN" style="position: fixed;width:100%; height: 100%">
 <head>
     <meta charset="UTF-8">
     <title>微楼书</title>
@@ -164,6 +164,9 @@
         if(sectionBeginIndex.indexOf(i) >= 0) {
             iSlider.lockLeft = true;
         }
+        if(sectionEndIndex.indexOf(i)>=0 || i == 8) {
+            iSlider.lockRight = true;
+        }
     };
 
     var speakerEle = document.querySelector('#speakerEle');
@@ -175,38 +178,15 @@
         0 === firstTaped && (audioEle.play(), firstTaped = 1)
     }
     function toggleMusic() {
-        audioEle.paused ? (speakerIcon.className = speakerIcon.className .replace("speaker_muted",""), audioEle.play()) : (speakerIcon.className += " speaker_muted", audioEle.pause())
+        audioEle.paused ? (speakerIcon.className = speakerIcon.className.replace("speaker_muted",""), audioEle.play()) : (speakerIcon.className += " speaker_muted", audioEle.pause())
+        firstTaped = 1;
     }
 
-    startPlayMusic();
-
-    var ScrollFix = function(elem) {
-        // Variables to track inputs
-        var startY, startTopScroll;
-
-        elem = elem || document.querySelector(elem);
-
-        // If there is no element, then do nothing
-        if(!elem)
-            return;
-
-        // Handle the start of interactions
-        elem.addEventListener('touchstart', function(event){
-            startY = event.touches[0].pageY;
-            startTopScroll = elem.scrollTop;
-
-            if(startTopScroll <= 0)
-                elem.scrollTop = 1;
-
-            if(startTopScroll + elem.offsetHeight >= elem.scrollHeight)
-                elem.scrollTop = elem.scrollHeight - elem.offsetHeight - 1;
-        }, false);
-    };
-
-
-    var scrollable = document.body;
-    new ScrollFix(scrollable);
-
+    document.body.addEventListener('touchstart', function(e){
+        if(audioEle.paused) {
+            startPlayMusic();
+        }
+    });
 
 </script>
 </body>
