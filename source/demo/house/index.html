@@ -55,7 +55,7 @@
         .slider_show
         {
             /*opacity: 1;*/
-            -webkit-animation:show 0.8s ease-in;
+            -webkit-animation:show 1s ease-in;
         }
         @-webkit-keyframes show /* Safari 和 Chrome */
         {
@@ -86,9 +86,39 @@
         {
             background-image: url(img/speaker_muted.png);
         }
+        .back_button
+        {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            background: url(img/back.png)  no-repeat;
+            background-size: contain;
+            z-index:99;
+        }
+
+        .right_button {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            margin-top: -15px;
+            background: url(img/left.png)  no-repeat;
+            background-size: contain;
+            z-index:99;
+
+            /*如果剪头向左的话，去掉这里的注释*/
+            /*-webkit-transform: rotate(180deg);*/
+            /*transform: rotate(180deg);*/
+        }
     </style>
 </head>
 <body>
+<a id="back_button" class="back_button" href="javascript:iSlider.slideTo(8);" style="display:none"></a>
+<a id="right_button" class="right_button" href="javascript:iSlider.slideTo(iSlider.slideIndex+1);" style=""></a>
+
 <div id="iSlider-wrapper">
 
 </div>
@@ -126,6 +156,9 @@
     var categoryHTML = '<div class="slider_cover" style="width:'+categoryWidth+'px;height:'+categoryHeight+'px;">'+itemHTML+
             '</div>';
 
+    var backEl = document.querySelector('#back_button');
+    var rightEl = document.querySelector('#right_button');
+
     for(var i = 0; i < 45; i++) {
         var index  = i + 1;
         data.push({
@@ -134,7 +167,7 @@
                         '<img class="slider_image" src="bg/pic_', index, '.jpg" ',isVerticle?'width':'height','="100%"></img>',
                         i != 0 ?('<img class="slider_cover slider_hide" data-index="'+i+'" src="text/pic_'+ index+ '.png" '+(isVerticle?'width':'height')+'="100%"></img>'):'',
                         i == 8? categoryHTML : "",
-                        sectionEndIndex.indexOf(i) >= 0 ? '<a href="javascript:iSlider.slideTo(8);" style="background: blue; color: white; font-size: 50px;">back</a>' : '',
+//                (sectionEndIndex.indexOf(i) >= 0 || true) ? backHTML : '',
                     '</div>'
             ].join("")
         });
@@ -147,26 +180,40 @@
         type:"dom"
     });
 
+    var timer;
     iSlider.onslidechange = function(i, o) {
+        backEl.style.display = "none";
+        rightEl.style.display = "none";
         iSlider.lockLeft = false;
         iSlider.lockRight = false;
-
-        var dom = document.querySelector('[data-index="'+i+'"]');
-        if(dom) {
-            dom.className = dom.className.replace("slider_hide", "slider_show");
+        clearTimeout(timer);
+        var dom = document.querySelector('[data-index="' + i + '"]');
+        if (dom) {
+            timer = setTimeout(function () {
+                if (dom) dom.className = dom.className.replace("slider_hide", "slider_show");
+            }, 300);
         }
 
-        var domBefore = document.querySelector('[data-index="'+o+'"]');
-        if(domBefore) {
+        var domBefore = document.querySelector('[data-index="' + o + '"]');
+        if (domBefore) {
             domBefore.className = domBefore.className.replace("slider_show", "slider_hide");
         }
 
-        if(sectionBeginIndex.indexOf(i) >= 0) {
+        if (sectionBeginIndex.indexOf(i) >= 0) {
             iSlider.lockLeft = true;
         }
-        if(sectionEndIndex.indexOf(i)>=0 || i == 8) {
+        if (sectionEndIndex.indexOf(i) >= 0 || i == 8) {
             iSlider.lockRight = true;
+        } else {
+            rightEl.style.display = "";
         }
+
+
+        if (sectionEndIndex.indexOf(i) >= 0) {
+            backEl.style.display = "";
+        }
+
+
     };
 
     var speakerEle = document.querySelector('#speakerEle');

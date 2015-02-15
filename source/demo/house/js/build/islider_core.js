@@ -463,6 +463,8 @@ iSlider = function () {
         X: device.hasTouch ? evt.targetTouches[0].pageX - this.startX : evt.pageX - this.startX,
         Y: device.hasTouch ? evt.targetTouches[0].pageY - this.startY : evt.pageY - this.startY
       };
+      if(this.lockLeft && offset.X > 0){return;}
+      if(this.lockRight && offset.X < 0){return;}
       var res = this._moveHandler ? this._moveHandler(evt) : false;
       if (!res && Math.abs(offset[axis]) - Math.abs(offset[reverseAxis]) > 10) {
         evt.preventDefault();
